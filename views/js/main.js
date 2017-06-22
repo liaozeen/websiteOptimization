@@ -433,11 +433,13 @@ var resizePizzas = function(size) {
         newWidth = 50;
         break;
       default:
-          console.log('bug in sizeSwitcher');
+         console.log('bug in sizeSwitcher');
     }
-    var randomPizzas = document.querySelectorAll(".randomPizzaContainer");
+
+    //当要获取大量的网页元素时，使用getElement*类的方法比较好。此处用getElementsByClassName代替querySelectorAll
+    var randomPizzas = document.getElementsByClassName(".randomPizzaContainer");
     for (var i = 0; i < randomPizzas.length; i++) {
-      randomPizzas[i].style.width = newWidth + "%";
+      randomPizzas[i].style.width = newWidth + "%";//使用%来设置披萨的尺寸可以避免强制布局
     }
   }
 
@@ -488,12 +490,13 @@ function updatePositions() {
 
 
  function render(){
+  //将不必要的计算都移到循环外部，避免了强制布局带来的布局抖动
   var items = document.querySelectorAll('.mover');
   var top = document.body.scrollTop / 1250;
   for (var i = 0; i < items.length; i++) {
     var phase = Math.sin(top+ (i % 5));
     items[i].style.left = items[i].basicLeft + 100 * phase + 'px';
-    //改进方案：
+    //改进备案：
     // var left = -items[i].basicLeft + 1000 * phase + 'px';
     //items[i].style.transform = "translateX("+left+") translateZ(0)";
   }
@@ -510,13 +513,26 @@ function updatePositions() {
 }
 
 // 在页面滚动时运行updatePositions函数
-window.addEventListener('scroll', updatePositions);
+//利用 requestAnimationFrame 方法来进一步优化滚动网页时候的流畅度，减少掉帧的可能性。
+window.addEventListener('scroll', function(){
+  requestAnimationFrame(updatePositions);
+});
 
 // 当页面加载时生成披萨滑窗
 document.addEventListener('DOMContentLoaded', function() {
   var cols = 8;
   var s = 256;
-  for (var i = 0; i < 31; i++) {
+
+  //获取窗口高度
+  if (window.innerHeight)
+  winHeight = window.innerHeight;
+  else if ((document.body) && (document.body.clientHeight))
+  winHeight = document.body.clientHeight;
+
+  //动态计算披萨的个数，这样可以适配不同的设备尺寸
+  var pizzaNumber = (winHeight/s)*cols;
+
+  for (var i = 0; i < pizzaNumber; i++) {
     var elem = document.createElement('img');
     elem.className = 'mover';
     elem.src = "images/pizza.png";

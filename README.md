@@ -40,7 +40,7 @@
 
 - 删除https://fonts.googleapis.com/css?family=Open+Sans:400,700。使用谷歌字体会网页性能
 
-- 在所有<script>标记里都加上async，延迟加载JavaScript
+- 在所有<script>标记里都加上async，避免脚本阻止DOM的构建
 
 - print.css和style.css较小，将print.css和style.css的内容内嵌在index.html中。
 
