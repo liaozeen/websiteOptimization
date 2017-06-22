@@ -196,7 +196,7 @@ function changePizzaSizes(size) {
     }
   }
 ```
-### 优化动画渲染
+#### 优化动画渲染
 
 使用requestAnimationFrame()刷新动画
 
